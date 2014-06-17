@@ -57,11 +57,18 @@ endef
 
 # uses GNU configure
 
+ifneq ($(CONFIG_USE_UCLIBCXX),)
+  CXXLIB=uClibc++
+  NOSTDINCXX=-nostdinc++
+else
+  CXXLIB=stdc++
+endif
+
 CONFIGURE_VARS += \
-	CXXFLAGS="$$$$CXXFLAGS -fno-builtin -fno-rtti -nostdinc++" \
+	CXXFLAGS="$$$$CXXFLAGS -fno-builtin -fno-rtti ${NOSTDINCXX}" \
 	CPPFLAGS="$$$$CPPFLAGS -I$(STAGING_DIR)/usr/include/uClibc++ -I$(LINUX_DIR)/include" \
 	LDFLAGS="$$$$LDFLAGS" \
-	LIBS="-nodefaultlibs -lc -luClibc++ -lm $(LIBGCC_S) -lc" \
+	LIBS="-nodefaultlibs -lc -l$(CXXLIB) -lm $(LIBGCC_S) -lc" \
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
