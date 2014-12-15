@@ -8,13 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tinc
-PKG_VERSION:=1.0.31
+PKG_VERSION:=1.1pre10-2014-06-03
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.tinc-vpn.org/packages
-PKG_MD5SUM:=7a96f7eb12dfd43b21852b4207d860f2
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_URL:=git://tinc-vpn.org/tinc
+PKG_SOURCE_PROTO:=git
+PKG_REV:=ef5e8b6920d1dd3097f36bd0c50170100acf2f28
+PKG_SOURCE_VERSION:=$(PKG_REV)
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -22,7 +26,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/tinc
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+liblzo +libopenssl +kmod-tun +zlib
+  DEPENDS:=+liblzo +libopenssl +kmod-tun +zlib +libncurses +libreadline
   TITLE:=VPN tunneling daemon
   URL:=http://www.tinc-vpn.org/
   MAINTAINER:=Saverio Proto <zioproto@gmail.com>
@@ -43,7 +47,8 @@ CONFIGURE_ARGS += \
 
 define Package/tinc/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/tincd $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{tinc,tincd} $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/sptps_test $(1)/usr/sbin/tinc-sptps_test
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(INSTALL_BIN) files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
 	$(INSTALL_DIR) $(1)/etc/config
