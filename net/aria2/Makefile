@@ -45,6 +45,8 @@ define Package/aria2
   URL:=https://aria2.github.io/
   DEPENDS:=+zlib +libstdcpp +ARIA2_SFTP:libssh2 +ARIA2_ASYNC_DNS:libcares +ARIA2_COOKIE:libsqlite3 +ARIA2_LIBXML2:libxml2 +ARIA2_EXPAT:libexpat +ARIA2_OPENSSL:libopenssl +ARIA2_GNUTLS:libgnutls
 endef
+# $(INTL_DEPENDS) $(ICONV_DEPENDS)
+# +USE_EGLIBC:librt
 
 define Package/aria2/description
  aria2 is a lightweight multi-protocol & multi-source command-line download
