@@ -58,10 +58,6 @@ define Package/libmysqlclient-r
   DEPENDS+= +libpthread
 endef
 
-ifneq ($(CONFIG_USE_UCLIBCXX),)
-  TARGET_CXX=g++-uc
-endif
-
 TARGET_CFLAGS += $(FPIC)
 
 CONFIGURE_ARGS += \
