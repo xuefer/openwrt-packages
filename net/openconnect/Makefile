@@ -31,7 +31,7 @@ endef
 define Package/openconnect
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libxml2 +kmod-tun +resolveip +vpnc-scripts +OPENCONNECT_OPENSSL:libopenssl +OPENCONNECT_OPENSSL:p11-kit +OPENCONNECT_OPENSSL:libp11 +OPENCONNECT_GNUTLS:libgnutls +OPENCONNECT_STOKEN:libstoken
+  DEPENDS:=+libxml2 +kmod-tun +resolveip +vpnc-scripts +OPENCONNECT_OPENSSL:libopenssl +OPENCONNECT_OPENSSL:p11-kit +OPENCONNECT_OPENSSL:libp11 +OPENCONNECT_GNUTLS:libgnutls +OPENCONNECT_STOKEN:libstoken +libgssapi
   TITLE:=OpenConnect VPN client (Cisco AnyConnect compatible)
   MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
   URL:=http://www.infradead.org/openconnect/
@@ -47,6 +47,7 @@ define Package/openconnect/description
         VPN server.
 endef
 
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/gssglue
 CONFIGURE_ARGS += \
 	--disable-shared \
 	--with-vpnc-script=/lib/netifd/vpnc-script \
