@@ -25,6 +25,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libpam
   SECTION:=libs
   CATEGORY:=Libraries
+  DEPENDS:=librpc
   TITLE:=the Linux-PAM libraries and modules.
   URL:=http://www.kernel.org/pub/linux/libs/pam
 endef
@@ -33,7 +34,7 @@ define Package/libpam/description
 	The Linux-PAM Pluggable Authentication Modules.
 endef
 
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += $(FPIC) -lrpc
 
 define Build/Configure
 	$(call Build/Configure/Default, \
