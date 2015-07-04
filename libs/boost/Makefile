@@ -369,6 +369,7 @@ define Build/Compile
 			$(CONFIGURE_ARGS) \
 			--ignore-site-config \
 			--toolset=gcc-$(ARCH) abi=$(BOOST_ABI) \
+			--ignore-site-config \
 			--disable-long-double \
 			$(if $(CONFIG_boost-variant-release), variant=release,) \
 			$(if $(CONFIG_boost-variant-debug), variant=debug,) \
