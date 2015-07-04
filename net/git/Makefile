@@ -115,6 +115,7 @@ define Package/git/install
 	( cd $(PKG_INSTALL_DIR); $(TAR) \
 		--exclude=usr/lib/git-core/git-http-backend \
 		--exclude=usr/lib/git-core/git-http-fetch \
+		--exclude=usr/lib/git-core/git-http-push \
 		--exclude=usr/lib/git-core/git-remote-ftp \
 		--exclude=usr/lib/git-core/git-remote-ftps \
 		--exclude=usr/lib/git-core/git-remote-http \
@@ -129,6 +130,7 @@ define Package/git-http/install
 	$(INSTALL_DIR) $(1)/usr/lib/git-core
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-http-backend $(1)/usr/lib/git-core
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-http-fetch $(1)/usr/lib/git-core
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-http-push $(1)/usr/lib/git-core
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-remote-ftp $(1)/usr/lib/git-core
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-remote-ftps $(1)/usr/lib/git-core
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/git-core/git-remote-http $(1)/usr/lib/git-core
