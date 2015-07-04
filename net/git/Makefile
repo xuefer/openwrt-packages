@@ -16,6 +16,7 @@ PKG_SOURCE_URL:=@KERNEL/software/scm/git/
 PKG_HASH:=d21a9e23506e618d561fb25a8a7bd6134f927b86147930103487117a7a678c4a
 
 PKG_INSTALL:=1
+PKG_CONFIG_DEPENDS:=CONFIG_PACKGE_libexpat
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 
@@ -43,7 +44,7 @@ endef
 
 define Package/git-http
 $(call Package/git/Default)
-  DEPENDS+=git +libcurl +ca-certificates
+  DEPENDS+=git +libcurl +ca-certificates PACKAGE_libexpat:libexpat
   TITLE:=Git HTTP commands
 endef
 
@@ -73,7 +74,7 @@ MAKE_FLAGS := \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	CPPFLAGS="$(TARGET_CPPFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
-	NO_EXPAT="YesPlease" \
+	$(if $(CONFIG_PACKAGE_libexpat),,NO_EXPAT="YesPlease") \
 	NO_MKSTEMPS="YesPlease" \
 	NO_GETTEXT="YesPlease" \
 	NO_UNIX_SOCKETS="YesPlease" \
