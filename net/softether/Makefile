@@ -19,8 +19,13 @@ PKG_REV:=ff497063732fdc08300c8bc166f4d4f62317e98a
 PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
-MAKE_FLAGS+= \
+TARGET_LDFLAGS+=-liconv
+
+MAKE_FLAGS+= DEBUG=YES \
+	CPPFLAGS="$(TARGET_CPPFLAGS)" \
+	LDFLAGS="$(TARGET_LDFLAGS)" \
 	bin/vpnserver/hamcore.se2 bin/vpnserver/vpnserver \
 	bin/vpnbridge/hamcore.se2 bin/vpnbridge/vpnbridge \
 	bin/vpnclient/hamcore.se2 bin/vpnclient/vpnclient \
