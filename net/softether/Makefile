@@ -23,13 +23,14 @@ include $(INCLUDE_DIR)/nls.mk
 
 TARGET_LDFLAGS+=-liconv
 
-MAKE_FLAGS+= DEBUG=YES \
+MAKE_FLAGS+= \
 	CPPFLAGS="$(TARGET_CPPFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
-	bin/vpnserver/hamcore.se2 bin/vpnserver/vpnserver \
-	bin/vpnbridge/hamcore.se2 bin/vpnbridge/vpnbridge \
-	bin/vpnclient/hamcore.se2 bin/vpnclient/vpnclient \
-	bin/vpncmd/hamcore.se2 bin/vpncmd/vpncmd
+	src/bin/BuiltHamcoreFiles/unix/hamcore.se2 \
+	bin/vpnserver/vpnserver \
+	bin/vpnbridge/vpnbridge \
+	bin/vpnclient/vpnclient \
+	bin/vpncmd/vpncmd
 
 define Build/Configure
   cd $(PKG_BUILD_DIR) && (echo 1; echo $(if $(CONFIG_ARCH_64BIT),2,1)) | ./configure
@@ -38,7 +39,7 @@ endef
 define Package/softether/default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libopenssl +libncurses +libreadline
+  DEPENDS:=+libopenssl +libncurses +libreadline $(ICONV_DEPENDS)
   TITLE:=Softehter
   URL:=https://www.softether.org
   MAINTAINER:=Daiyuu Nobori
@@ -51,9 +52,19 @@ define Package/softether/default/description
   as an academic project from University of Tsukuba.
 endef
 
+define Package/softether-common
+  $(Package/softether/default)
+  TITLE:=Softether VPN - common
+endef
+
+define Package/softether-common/description
+$(Package/softether/default/description)
+endef
+
 define Package/softether-server
   $(Package/softether/default)
   TITLE:=Softether VPN - server
+  DEPENDS+=+softether-common
 endef
 
 define Package/softether-server/description
@@ -63,6 +74,7 @@ endef
 define Package/softether-bridge
   $(Package/softether/default)
   TITLE:=Softether VPN - bridge
+  DEPENDS+=+softether-common
 endef
 
 define Package/softether-bridge/description
@@ -72,6 +84,7 @@ endef
 define Package/softether-client
   $(Package/softether/default)
   TITLE:=Softether VPN - client
+  DEPENDS+=+softether-common
 endef
 
 define Package/softether-client/description
@@ -81,6 +94,7 @@ endef
 define Package/softether-cmd
   $(Package/softether/default)
   TITLE:=Softether VPN - command line tool
+  DEPENDS+=+softether-common
 endef
 
 define Package/softether-cmd/description
@@ -89,9 +103,25 @@ endef
 
 TARGET_CFLAGS += -std=gnu99
 
+define Package/softether-common/install
+	$(INSTALL_DIR) $(1)/opt/softether
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/bin/BuiltHamcoreFiles/unix/hamcore.se2 $(1)/opt/softether/
+
+	$(INSTALL_DIR) $(1)/etc
+	$(INSTALL_DIR) $(1)/etc/softether
+	touch $(1)/etc/softether/lang.config
+	ln -sf /etc/softether/lang.config $(1)/opt/softether/
+	ln -sf /var/log/softether/packet_log $(1)/opt/softether/
+	ln -sf /var/log/softether/security_log $(1)/opt/softether/
+endef
+
+define Package/softether-server/conffiles
+/etc/softether
+endef
+
 define Package/softether-server/install
-	$(INSTALL_DIR) $(1)/opt/vpnserver
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/{vpnserver,hamcore.se2} $(1)/opt/vpnserver/
+	$(INSTALL_DIR) $(1)/opt/softether
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/vpnserver $(1)/opt/softether/
 
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DIR) $(1)/etc/softether
@@ -99,10 +129,12 @@ define Package/softether-server/install
 	touch $(1)/etc/softether/vpn_server.config
 
 	$(INSTALL_DIR) $(1)/usr/sbin
-	ln -sf /opt/vpnserver/vpnserver $(1)/usr/sbin
-	ln -sf /etc/softether/vpn_server.config $(1)/opt/vpnserver/
-	ln -sf /etc/softether/lang.config $(1)/opt/vpnserver/
-	ln -sf /etc/softether/backup.vpn_server.config $(1)/opt/vpnserver/
+	echo '#!/bin/sh' > $(1)/usr/sbin/vpnserver
+	echo 'exec /opt/softether/vpnserver "$$$$@"' >> $(1)/usr/sbin/vpnserver
+	chmod 755 $(1)/usr/sbin/vpnserver
+	ln -sf /etc/softether/vpn_server.config $(1)/opt/softether/
+	ln -sf /etc/softether/backup.vpn_server.config $(1)/opt/softether/
+	ln -sf /var/log/softether/server_log $(1)/opt/softether/
 endef
 
 define Package/softether-server/conffiles
@@ -110,8 +142,8 @@ define Package/softether-server/conffiles
 endef
 
 define Package/softether-bridge/install
-	$(INSTALL_DIR) $(1)/opt/vpnbridge
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnbridge/{vpnbridge,hamcore.se2} $(1)/opt/vpnbridge/
+	$(INSTALL_DIR) $(1)/opt/softether
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnbridge/vpnbridge $(1)/opt/softether/
 
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DIR) $(1)/etc/softether
@@ -119,15 +151,16 @@ define Package/softether-bridge/install
 	touch $(1)/etc/softether/vpn_bridge.config
 
 	$(INSTALL_DIR) $(1)/usr/sbin
-	ln -sf /opt/vpnbridge/vpnbridge $(1)/usr/sbin
-	ln -sf /etc/softether/vpn_bridge.config $(1)/opt/vpnbridge/
-	ln -sf /etc/softether/lang.config $(1)/opt/vpnbridge/
-	ln -sf /etc/softether/backup.vpn_bridge.config $(1)/opt/vpnbridge/
+	echo '#!/bin/sh' > $(1)/usr/sbin/vpnbridge
+	echo 'exec /opt/softether/vpnbridge "$$$$@"' >> $(1)/usr/sbin/vpnbridge
+	chmod 755 $(1)/usr/sbin/vpnbridge
+	ln -sf /etc/softether/vpn_bridge.config $(1)/opt/softether/
+	ln -sf /etc/softether/backup.vpn_bridge.config $(1)/opt/softether/
 endef
 
 define Package/softether-client/install
-	$(INSTALL_DIR) $(1)/opt/vpnclient
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnclient/{vpnclient,hamcore.se2} $(1)/opt/vpnclient/
+	$(INSTALL_DIR) $(1)/opt/softether
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnclient/vpnclient $(1)/opt/softether/
 
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DIR) $(1)/etc/softether
@@ -135,15 +168,16 @@ define Package/softether-client/install
 	touch $(1)/etc/softether/vpn_client.config
 
 	$(INSTALL_DIR) $(1)/usr/sbin
-	ln -sf /opt/vpnclient/vpnclient $(1)/usr/sbin
-	ln -sf /etc/softether/vpn_client.config $(1)/opt/vpnclient/
-	ln -sf /etc/softether/lang.config $(1)/opt/vpnclient/
-	ln -sf /etc/softether/backup.vpn_client.config $(1)/opt/vpnclient/
+	echo '#!/bin/sh' > $(1)/usr/sbin/vpnclient
+	echo 'exec /opt/softether/vpnclient "$$$$@"' >> $(1)/usr/sbin/vpnclient
+	chmod 755 $(1)/usr/sbin/vpnclient
+	ln -sf /etc/softether/vpn_client.config $(1)/opt/softether/
+	ln -sf /etc/softether/backup.vpn_client.config $(1)/opt/softether/
 endef
 
 define Package/softether-cmd/install
-	$(INSTALL_DIR) $(1)/opt/vpncmd
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpncmd/{vpncmd,hamcore.se2} $(1)/opt/vpncmd/
+	$(INSTALL_DIR) $(1)/opt/softether
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpncmd/vpncmd $(1)/opt/softether/
 
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DIR) $(1)/etc/softether
@@ -151,12 +185,14 @@ define Package/softether-cmd/install
 	touch $(1)/etc/softether/vpn_cmd.config
 
 	$(INSTALL_DIR) $(1)/usr/sbin
-	ln -sf /opt/vpncmd/vpncmd $(1)/usr/sbin
-	ln -sf /etc/softether/vpn_cmd.config $(1)/opt/vpncmd/
-	ln -sf /etc/softether/lang.config $(1)/opt/vpncmd/
-	ln -sf /etc/softether/backup.vpn_cmd.config $(1)/opt/vpncmd/
+	echo '#!/bin/sh' > $(1)/usr/sbin/vpncmd
+	echo 'exec /opt/softether/vpncmd "$$$$@"' >> $(1)/usr/sbin/vpncmd
+	chmod 755 $(1)/usr/sbin/vpncmd
+	ln -sf /etc/softether/vpn_cmd.config $(1)/opt/softether/
+	ln -sf /etc/softether/backup.vpn_cmd.config $(1)/opt/softether/
 endef
 
+$(eval $(call BuildPackage,softether-common))
 $(eval $(call BuildPackage,softether-server))
 $(eval $(call BuildPackage,softether-bridge))
 $(eval $(call BuildPackage,softether-client))
