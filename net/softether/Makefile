@@ -8,18 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=softether
-PKG_VERSION:=4.18-9570-rtm
+PKG_VERSION:=4.19-9599-beta
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/SoftEtherVPN/SoftEtherVPN.git
 PKG_SOURCE_PROTO:=git
-PKG_REV:=4b65e251f240d0b36c704acd598f4ceb07c41413
+PKG_REV:=d3a1b26413acf3b387475f9ec5c4cbd93c5ffffe
 PKG_SOURCE_VERSION:=$(PKG_REV)
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
+
+PKG_BUILD_PARALLEL:=1
 
 TARGET_LDFLAGS+=-liconv
 
