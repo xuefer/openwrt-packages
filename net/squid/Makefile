@@ -163,6 +163,7 @@ CONFIGURE_ARGS += \
 	--disable-auth-negotiate \
 	--with-krb5-config=no \
 	--without-mit-krb5 \
+	--without-heimdal-krb5 \
 	--without-libcap \
 	--without-netfilter-conntrack \
 	--enable-err-languages=English \
