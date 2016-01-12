@@ -37,7 +37,7 @@ define Package/shadowsocks-libev/Default
 	TITLE:=Lightweight Secured Socks5 Proxy $(2)
 	URL:=https://github.com/shadowsocks/shadowsocks-libev
 	VARIANT:=$(1)
-	DEPENDS:=$(3) +libpthread +ipset +ip +iptables-mod-tproxy +libpcre +zlib
+	DEPENDS:=$(3) +libpthread +ipset @(PACKAGE_ip||PACKAGE_ip-full)  +iptables-mod-tproxy +libpcre +zlib
 endef
 
 CONFIGURE_ARGS += \
