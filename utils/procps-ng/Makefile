@@ -44,6 +44,7 @@ endef
 define Build/Prepare
 	$(call Build/Prepare/Default)
 	echo "$(PKG_VERSION)" > "$(PKG_BUILD_DIR)/.tarball-version"
+	cd $(PKG_BUILD_DIR); ACLOCAL_INCLUDE="-I m4 $$$$ACLOCAL_INCLUDE" ./autogen.sh
 endef
 
 define Package/procps-ng
