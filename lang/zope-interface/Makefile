@@ -17,12 +17,17 @@ PKG_MD5SUM:=5f7e15a5bcdfa3c6c0e93ffe45caf87c
 
 PKG_BUILD_DEPENDS:=python python-setuptools
 
+PKG_BUILD_DIR:=$(BUILD_DIR)/zope.interface-$(PKG_VERSION)
+HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/zope.interface-$(PKG_VERSION)
+
 PKG_LICENSE:=ZPL-2.1
 PKG_LICENSE_FILES:=LICENSE.txt
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
+include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
+$(call include_mk, python-host.mk)
 
 define Package/zope-interface
   SECTION:=lang
@@ -47,10 +52,35 @@ define PyPackage/zope-interface/filespec
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,, \
-		install --prefix="/usr" --root="$(PKG_INSTALL_DIR)" --no-compile, \
+	$(call Build/Compile/PyMod,,\
+		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr" \
+		--single-version-externally-managed \
 	)
 endef
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
+	$(CP) \
+		$(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
+		$(1)$(PYTHON_PKG_DIR)
+endef
+
+define PyPackage/zope-install/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+endef
+
+define Host/Compile
+	$(call Build/Compile/HostPyMod,,\
+		install --root="$(STAGING_DIR_HOST)" --prefix="/usr" \
+		--single-version-externally-managed \
+	)
+endef
+
+define Host/Install
+endef
+
+$(eval $(call HostBuild))
 
 $(eval $(call PyPackage,zope-interface))
 $(eval $(call BuildPackage,zope-interface))
