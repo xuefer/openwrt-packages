@@ -8,16 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadowsocks-libev
-PKG_VERSION:=2.6.1
-PKG_RELEASE:=1
+PKG_VERSION:=2.5.6
+PKG_SOURCE_VERSION:=e1d82525c2aeaf5170b640e7ec363f0b74835c61
+PKG_RELEASE:=2017-02-05-$(PKG_SOURCE_VERSION)
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev.git
+PKG_SOURCE_URL:=https://github.com/shadowsocksr/shadowsocksr-libev.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
-PKG_SOURCE_VERSION:=a3bf80cf11e0a88589abdd87266b5351f270197c
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 PKG_MAINTAINER:=Jian Chang <aa65535@live.com>
-PKG_MIRROR_MD5SUM:=fc60936d8b990fdecd69b908bc6b770b1c1e54598da6622cc9669750c76fa2d1
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=LICENSE
@@ -35,9 +34,9 @@ define Package/shadowsocks-libev/Default
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=Lightweight Secured Socks5 Proxy $(2)
-	URL:=https://github.com/shadowsocks/shadowsocks-libev
+	URL:=https://github.com/breakwa11/shadowsocks-libev.git
 	VARIANT:=$(1)
-	DEPENDS:=$(3) +libpthread +ipset @(PACKAGE_ip||PACKAGE_ip-full)  +iptables-mod-tproxy +libpcre +zlib
+	DEPENDS:=$(3) +libpthread +ipset @(PACKAGE_ip||PACKAGE_ip-full) +iptables-mod-tproxy +libpcre +zlib
 endef
 
 CONFIGURE_ARGS += \
@@ -79,7 +78,7 @@ endif
 
 define Package/shadowsocks-libev/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ss-{redir,tunnel} $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ss-{redir,tunnel,local,server} $(1)/usr/bin
 	$(INSTALL_BIN) ./files/ss-rules $(1)/usr/bin
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/shadowsocks-libev.config $(1)/etc/config/shadowsocks-libev
