@@ -120,8 +120,11 @@ define Package/squid-mod-ntlm-auth-smb-lm
   TITLE:=Samba NTLM authentication helper
 endef
 
+CONFIGURE_VARS += \
+	BUILDCXX=g++ \
+	BUILDCXXFLAGS="-O2 -pipe -march=native"
+
 CONFIGURE_ARGS += \
-	HOSTCXX=g++ \
 	--config-cache \
 	--datadir=/usr/share/squid \
 	--libexecdir=/usr/lib/squid \
