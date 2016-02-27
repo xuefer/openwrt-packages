@@ -72,7 +72,7 @@ endef
 
 define Host/Compile
 	$(call Build/Compile/HostPyMod,,\
-		install --root="$(STAGING_DIR_HOST)" --prefix="/usr" \
+		install --root="$(STAGING_DIR)/host" --prefix="/usr" \
 		--single-version-externally-managed \
 	)
 endef
