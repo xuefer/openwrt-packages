@@ -260,9 +260,8 @@ ifneq ($(CONFIG_PACKAGE_collectd-mod-onewire),)
   CONFIGURE_ARGS+= --with-libowcapi="$(STAGING_DIR)/usr"
 endif
 
-# exception: mod-rrdtool needs rrdtool-1.0.x
 ifneq ($(CONFIG_PACKAGE_collectd-mod-rrdtool),)
-  CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/usr/lib/rrdtool-1.0"
+  CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/usr/lib/rrdtool-1.2"
 endif
 
 define Package/collectd/conffiles
@@ -358,7 +357,7 @@ $(eval $(call BuildPlugin,postgresql,PostgreSQL status input,postgresql,+PACKAGE
 $(eval $(call BuildPlugin,powerdns,PowerDNS server status input,powerdns,))
 $(eval $(call BuildPlugin,processes,process status input,processes,))
 $(eval $(call BuildPlugin,protocols,network protocols input,protocols,))
-$(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd1))
+$(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd))
 $(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:libsensors))
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
 $(eval $(call BuildPlugin,syslog,syslog output,syslog,))
