@@ -26,8 +26,8 @@ PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
 $(call include_mk, python-host.mk)
+$(call include_mk, python-package.mk)
 
 define Package/zope-interface
   SECTION:=lang
@@ -72,7 +72,7 @@ endef
 
 define Host/Compile
 	$(call Build/Compile/HostPyMod,,\
-		install --root="$(STAGING_DIR)/host" --prefix="/usr" \
+		install --root="$(STAGING_DIR)/host" --prefix="" \
 		--single-version-externally-managed \
 	)
 endef
