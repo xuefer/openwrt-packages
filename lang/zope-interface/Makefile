@@ -16,6 +16,7 @@ PKG_SOURCE_URL:=https://pypi.python.org/packages/38/1b/d55c39f2cf442bd9fb2c59760
 PKG_MD5SUM:=5f7e15a5bcdfa3c6c0e93ffe45caf87c
 
 PKG_BUILD_DEPENDS:=python python-setuptools
+HOST_BUILD_DEPENDS:=python/host python-setuptools/host
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/zope.interface-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/zope.interface-$(PKG_VERSION)
@@ -26,8 +27,8 @@ PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-host.mk)
 $(call include_mk, python-package.mk)
+$(call include_mk, python-host.mk)
 
 define Package/zope-interface
   SECTION:=lang
@@ -58,23 +59,13 @@ define Build/Compile
 	)
 endef
 
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-		$(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-		$(1)$(PYTHON_PKG_DIR)
-endef
-
 define PyPackage/zope-install/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
 endef
 
 define Host/Compile
-	$(call Build/Compile/HostPyMod,,\
-		install --root="$(STAGING_DIR)/host" --prefix="" \
-		--single-version-externally-managed \
-	)
+	$(call Build/Compile/HostPyMod,,install --prefix="" --root="$(STAGING_DIR)/host")
 endef
 
 define Host/Install
