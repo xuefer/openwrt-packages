@@ -1,0 +1,26 @@
+From 1f0bf15af4a32a76df87233c5acae74412171090 Mon Sep 17 00:00:00 2001
+From: Xuefer <xuefer@gmail.com>
+Date: Fri, 9 Sep 2016 10:56:07 +0800
+Subject: [PATCH 1/2] lighttpd status
+
+---
+ python.d/apache.chart.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/python.d/apache.chart.py b/python.d/apache.chart.py
+index 2e4d16d..c9f9c69 100644
+--- a/python.d/apache.chart.py
++++ b/python.d/apache.chart.py
+@@ -76,7 +76,9 @@ class Service(UrlService):
+         self.definitions = CHARTS
+         self.assignment = {"BytesPerReq": 'size_req',
+                            "IdleWorkers": 'idle',
++                           "IdleServers": 'idle',
+                            "BusyWorkers": 'busy',
++                           "BusyServers": 'busy',
+                            "ReqPerSec": 'requests_sec',
+                            "BytesPerSec": 'size_sec',
+                            "Total Accesses": 'requests',
+-- 
+2.7.3
+

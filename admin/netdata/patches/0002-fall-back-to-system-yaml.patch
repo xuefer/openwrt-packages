@@ -1,0 +1,39 @@
+From 004420a0490439a4ff2771a16ee7859a1622e2ff Mon Sep 17 00:00:00 2001
+From: Xuefer <xuefer@gmail.com>
+Date: Mon, 19 Dec 2016 01:30:07 +0800
+Subject: [PATCH 2/2] fall back to system yaml
+
+Signed-off-by: Xuefer <xuefer@gmail.com>
+---
+ plugins.d/python.d.plugin | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/plugins.d/python.d.plugin b/plugins.d/python.d.plugin
+index 05d23b9..102e0eb 100755
+--- a/plugins.d/python.d.plugin
++++ b/plugins.d/python.d.plugin
+@@ -54,17 +54,16 @@ except (AssertionError, ImportError):
+         msg.info('Using python v2')
+     except ImportError:
+         msg.fatal('Cannot start. No importlib.machinery on python3 or lack of imp on python2')
+-# try:
+-#     import yaml
+-# except ImportError:
+-#     msg.fatal('Cannot find yaml library')
+ try:
+     if PY_VERSION == 3:
+         import pyyaml3 as yaml
+     else:
+         import pyyaml2 as yaml
+ except ImportError:
+-    msg.fatal('Cannot find yaml library')
++    try:
++        import yaml
++    except ImportError:
++        msg.fatal('Cannot find yaml library')
+ 
+ 
+ class PythonCharts(object):
+-- 
+2.7.3
+
