@@ -1,0 +1,110 @@
+--- a/src/netcat.c
++++ b/src/netcat.c
+@@ -56,6 +56,7 @@
+ int opt_interval = 0;		/* delay (in seconds) between lines/ports */
+ int opt_verbose = 0;		/* be verbose (> 1 to be MORE verbose) */
+ int opt_wait = 0;		/* wait time */
++int opt_bufsize = 1024;         /* read/write buffer size */
+ char *opt_outputfile = NULL;	/* hexdump output file */
+ char *opt_exec = NULL;		/* program to exec after connecting */
+ nc_proto_t opt_proto = NETCAT_PROTO_TCP; /* protocol to use for connections */
+@@ -212,11 +213,12 @@
+ 	{ "version",	no_argument,		NULL, 'V' },
+ 	{ "hexdump",	no_argument,		NULL, 'x' },
+ 	{ "wait",	required_argument,	NULL, 'w' },
++	{ "bufsize",	required_argument,	NULL, 'O' },
+ 	{ "zero",	no_argument,		NULL, 'z' },
+ 	{ 0, 0, 0, 0 }
+     };
+ 
+-    c = getopt_long(argc, argv, "cde:g:G:hi:lL:no:p:P:rs:S:tTuvVxw:z",
++    c = getopt_long(argc, argv, "cde:g:G:hi:lL:no:p:P:rs:S:tTuvVxw:O:z",
+ 		    long_options, &option_index);
+     if (c == -1)
+       break;
+@@ -340,6 +342,12 @@
+ 	ncprint(NCPRINT_ERROR | NCPRINT_EXIT, _("Invalid wait-time: %s"),
+ 		optarg);
+       break;
++    case 'O':			/* read/write buffer size */
++      opt_bufsize = atoi(optarg);
++      if (opt_bufsize <= 0)
++	ncprint(NCPRINT_ERROR | NCPRINT_EXIT, _("Invalid buffer size: %s"),
++		optarg);
++      break;
+     case 'x':			/* hexdump traffic */
+       opt_hexdump = TRUE;
+       break;
+--- a/src/proto.h
++++ b/src/proto.h
+@@ -57,6 +57,7 @@
+ extern bool opt_eofclose, opt_debug, opt_numeric, opt_random, opt_hexdump,
+ 	opt_telnet, opt_zero;
+ extern int opt_interval, opt_verbose, opt_wait;
++extern int opt_bufsize;
+ extern char *opt_outputfile;
+ extern nc_proto_t opt_proto;
+ extern FILE *output_fp;
+--- a/src/core.c
++++ b/src/core.c
+@@ -81,6 +81,7 @@
+ static int core_udp_listen(nc_sock_t *ncsock)
+ {
+   int ret, *sockbuf, sock, sock_max, timeout = ncsock->timeout;
++  unsigned char buf[opt_bufsize];
+   bool need_udphelper = TRUE;
+ #ifdef USE_PKTINFO
+   int sockopt = 1;
+@@ -182,7 +183,6 @@
+     for (socks_loop = 1; socks_loop <= sockbuf[0]; socks_loop++) {
+       int recv_ret, write_ret;
+       struct msghdr my_hdr;
+-      unsigned char buf[1024];
+       struct iovec my_hdr_vec;
+       struct sockaddr_in rem_addr;
+       struct sockaddr_in local_addr;
+@@ -205,7 +205,7 @@
+       my_hdr.msg_namelen = sizeof(rem_addr);
+       /* initialize the vector struct and then the vectory member of the header */
+       my_hdr_vec.iov_base = buf;
+-      my_hdr_vec.iov_len = sizeof(buf);
++      my_hdr_vec.iov_len = opt_bufsize;
+       my_hdr.msg_iov = &my_hdr_vec;
+       my_hdr.msg_iovlen = 1;
+ #ifdef USE_PKTINFO
+@@ -525,7 +525,7 @@
+ {
+   int fd_stdin, fd_stdout, fd_sock, fd_max;
+   int read_ret, write_ret;
+-  unsigned char buf[1024];
++  unsigned char buf[opt_bufsize];
+   bool inloop = TRUE;
+   fd_set ins, outs;
+   struct timeval delayer;
+@@ -647,7 +647,7 @@
+        this queue is empty now because otherwise this fd wouldn't have been
+        watched. */
+     if (call_select && FD_ISSET(fd_stdin, &ins)) {
+-      read_ret = read(fd_stdin, buf, sizeof(buf));
++      read_ret = read(fd_stdin, buf, opt_bufsize);
+       debug_dv(("read(stdin) = %d", read_ret));
+ 
+       if (read_ret < 0) {
+@@ -785,7 +785,7 @@
+       if ((nc_main->proto == NETCAT_PROTO_UDP) && opt_zero) {
+ 	memset(&recv_addr, 0, sizeof(recv_addr));
+ 	/* this allows us to fetch packets from different addresses */
+-	read_ret = recvfrom(fd_sock, buf, sizeof(buf), 0,
++	read_ret = recvfrom(fd_sock, buf, opt_bufsize, 0,
+ 			    (struct sockaddr *)&recv_addr, &recv_len);
+ 	/* when recvfrom() call fails, recv_addr remains untouched */
+ 	debug_dv(("recvfrom(net) = %d (address=%s:%d)", read_ret,
+@@ -793,7 +793,7 @@
+       }
+       else {
+ 	/* common file read fallback */
+-	read_ret = read(fd_sock, buf, sizeof(buf));
++	read_ret = read(fd_sock, buf, opt_bufsize);
+ 	debug_dv(("read(net) = %d", read_ret));
+       }
+ 
