@@ -79,6 +79,7 @@ CONFIGURE_ARGS += \
 	--without-man \
 	--without-readline \
 	--without-debug \
+	--with-extra-charsets=gbk \
 	--with-named-thread-libs=-lpthread
 
 CONFIGURE_VARS += \
