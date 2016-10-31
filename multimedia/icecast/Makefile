@@ -22,7 +22,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:= 1
-PKG_BUILD_DEPENDS:=libxml2/host
+PKG_BUILD_DEPENDS:=libxml2/host libxslt
 
 include $(INCLUDE_DIR)/package.mk
 
