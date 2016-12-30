@@ -41,7 +41,7 @@ endef
 define Package/softether/default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libopenssl +libncurses +libreadline $(ICONV_DEPENDS)
+  DEPENDS:=+libopenssl +libncurses +libreadline +zlib $(ICONV_DEPENDS)
   TITLE:=Softehter
   URL:=https://www.softether.org
   MAINTAINER:=Daiyuu Nobori
