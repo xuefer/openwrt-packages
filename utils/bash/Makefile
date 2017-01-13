@@ -59,8 +59,9 @@ endef
 
 define Package/bash/postinst
 #!/bin/sh
-grep bash $${IPKG_INSTROOT}/etc/shells || \
+grep /bash $${IPKG_INSTROOT}/etc/shells || \
 	echo "/bin/bash" >> $${IPKG_INSTROOT}/etc/shells
+grep /rbash $${IPKG_INSTROOT}/etc/shells || \
 	echo "/bin/rbash" >> $${IPKG_INSTROOT}/etc/shells
 endef
 
