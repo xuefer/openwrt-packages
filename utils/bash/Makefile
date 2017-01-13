@@ -44,6 +44,8 @@ endef
 define Build/Configure
 	$(call Build/Configure/Default, \
 		--without-bash-malloc \
+		bash_cv_job_control_missing=present \
+		bash_cv_sys_named_pipes=present \
                 --bindir=/bin \
 	)
 endef
