@@ -38,10 +38,7 @@ define Package/python-rjsmin/description
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,\
-		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr" \
-		--single-version-externally-managed \
-	)
+	$(call PyBuild/Compile/Default)
 endef
 
 define Host/Compile
