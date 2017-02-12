@@ -19,8 +19,8 @@ Upstream-Status: Submitted
 
 Index: fontconfig-2.12.1/fontconfig/fontconfig.h
 ===================================================================
---- fontconfig/fontconfig.h
-+++ fontconfig/fontconfig.h
+--- a/fontconfig/fontconfig.h
++++ b/fontconfig/fontconfig.h
 @@ -128,7 +128,8 @@ typedef int		FcBool;
  #define FC_USER_CACHE_FILE	    ".fonts.cache-" FC_CACHE_VERSION
  
@@ -33,8 +33,8 @@ Index: fontconfig-2.12.1/fontconfig/fontconfig.h
  
 Index: fontconfig-2.12.1/src/fcobjs.h
 ===================================================================
---- src/fcobjs.h
-+++ src/fcobjs.h
+--- a/src/fcobjs.h
++++ b/src/fcobjs.h
 @@ -51,7 +51,7 @@ FC_OBJECT (DPI,			FcTypeDouble,	NULL)
  FC_OBJECT (RGBA,		FcTypeInteger,	NULL)
  FC_OBJECT (SCALE,		FcTypeDouble,	NULL)
@@ -46,8 +46,8 @@ Index: fontconfig-2.12.1/src/fcobjs.h
  FC_OBJECT (CHARSET,		FcTypeCharSet,	FcCompareCharSet)
 Index: fontconfig-2.12.1/src/fcobjshash.gperf
 ===================================================================
---- src/fcobjshash.gperf
-+++ src/fcobjshash.gperf
+--- a/src/fcobjshash.gperf
++++ b/src/fcobjshash.gperf
 @@ -44,7 +44,7 @@ int id;
  "rgba",FC_RGBA_OBJECT
  "scale",FC_SCALE_OBJECT
@@ -59,8 +59,8 @@ Index: fontconfig-2.12.1/src/fcobjshash.gperf
  "charset",FC_CHARSET_OBJECT
 Index: fontconfig-2.12.1/src/fcobjshash.h
 ===================================================================
---- src/fcobjshash.h
-+++ src/fcobjshash.h
+--- a/src/fcobjshash.h
++++ b/src/fcobjshash.h
 @@ -284,7 +284,7 @@ FcObjectTypeLookup (register const char
        {(int)(long)&((struct FcObjectTypeNamePool_t *)0)->FcObjectTypeNamePool_str43,FC_CHARSET_OBJECT},
        {-1},
