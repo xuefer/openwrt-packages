@@ -65,7 +65,7 @@ define PyPackage/zope-install/install
 endef
 
 define Host/Compile
-	$(call Build/Compile/HostPyMod,,install --prefix="" --root="$(STAGING_DIR)/host")
+	$(call HostPy/Compile/Default)
 endef
 
 define Host/Install
