@@ -102,7 +102,8 @@ define Build/Compile/HostPyRunTarget
 		LDSHARED="$(TARGET_CC) -shared" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="$(TARGET_CPPFLAGS) -I$(PYTHON_INC_DIR)" \
-		LDFLAGS="$(TARGET_LDFLAGS) -lpython$(PYTHON_VERSION)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		LIBS="-lpython$(PYTHON_VERSION)" \
 		_PYTHON_HOST_PLATFORM=linux2 \
 		__PYVENV_LAUNCHER__="/usr/bin/$(PYTHON)" \
 		$(3) \
