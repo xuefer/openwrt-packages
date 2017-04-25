@@ -4,13 +4,11 @@
 START=95
 STOP=10
 
-SERVICE_DAEMONIZE=1
-SERVICE_WRITE_PID=1
-SERVICE_STOP_TIME=9
+USE_PROCD=1
 PROG='/usr/bin/mysqld'
 
-start() {
-	local conf='/etc/my.cnf'
+start_one() {
+	local conf="$1"
 	local datadir="$( sed -nE "s/^\s*datadir\s*=\s*('([^']*)'|\x22([^\x22]*)\x22|(.*\S))\s*$/\2\3\4/p" "$conf" )"
 
 	[ -d "$datadir" ] || {
@@ -24,9 +22,24 @@ start() {
 		return 1
 	}
 
-	service_start "$PROG"
+	procd_open_instance
+	procd_set_param command "$PROG" --defaults-file="$conf"
+	procd_set_param respawn
+	procd_set_param stderr 1
+	procd_close_instance
 }
 
-stop() {
-	service_stop "$PROG"
+service_triggers()
+{
+	procd_add_reload_trigger "mysqld"
+}
+
+start_service() {
+	local conf
+	for conf in /etc/my.cnf /etc/my-*.cnf; do
+		if [ -f "$conf" ];then
+			# echo "${initscript}:" "starting $conf ..." 1>&2
+			start_one "$conf"
+		fi
+	done
 }
